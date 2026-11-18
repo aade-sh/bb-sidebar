@@ -14,6 +14,7 @@ import type { createTitleRegenerator } from "./regenerate-title";
 import { SIDEBAR_SETTINGS_CHANNEL } from "./contract";
 import { INBOX_ORDER_TAG, SIDEBAR_SETTINGS_TAG } from "./rpc-tags";
 import { runThreadTasks } from "./thread-tasks";
+import { createServerChildGroups } from "./server-child-groups";
 
 const CATALOG_TTL_MS = 5 * 60_000;
 
@@ -59,6 +60,7 @@ export function createServerHandlers(
   };
 
   const handlers = {
+    ...createServerChildGroups(ctx),
     getOpenPorts,
     getThreadPorts: threadPortActions.getThreadPorts,
     getThreadPullRequests: threadPullRequests.getThreadPullRequests,

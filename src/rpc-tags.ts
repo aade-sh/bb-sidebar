@@ -10,3 +10,4 @@ export const INBOX_ORDER_TAG = "inbox-order";
 export const LIFECYCLE_TAG = "lifecycle";
 /** The standard projects `listProjects` returns: their ids and names. */
 export const PROJECTS_TAG = "projects";
+export const CHILD_GROUPS_TAG = "child-groups";

@@ -8,6 +8,7 @@ export const STORAGE_KEYS = {
   lifecycle: { key: "bb-sidebar:lifecycle-cache:v1", evictionPriority: 30 },
   // Expanded child parent IDs.
   childExpansion: { key: "bb-sidebar:child-expansion:v1", evictionPriority: 40 },
+  childGroups: { key: "bb-sidebar:child-groups-prototype:v1", evictionPriority: 95 },
   // Collapsed project IDs.
   projectCollapse: { key: "bb-sidebar:project-collapse:v1", evictionPriority: 50 },
   // Selected projects in this window's session storage; empty means all.

@@ -20,7 +20,14 @@ import {
   type EnvironmentPullRequest,
   type EnvironmentPullRequestRow,
 } from "./github-pr-status";
-import { INBOX_ORDER_TAG, LIFECYCLE_TAG, PROJECT_COLORS_TAG, PROJECTS_TAG, SIDEBAR_SETTINGS_TAG } from "./rpc-tags";
+import {
+  CHILD_GROUPS_TAG,
+  INBOX_ORDER_TAG,
+  LIFECYCLE_TAG,
+  PROJECT_COLORS_TAG,
+  PROJECTS_TAG,
+  SIDEBAR_SETTINGS_TAG,
+} from "./rpc-tags";
 
 export {
   experimental_useSidebarThreads as useSidebarThreads,
@@ -136,6 +143,7 @@ function taggedRead<Method extends keyof SidebarRpc>(tags: readonly string[]) {
 }
 
 const sidebarReads = {
+  getChildGroups: taggedRead<"getChildGroups">([CHILD_GROUPS_TAG]),
   getProjectColors: taggedRead<"getProjectColors">([PROJECT_COLORS_TAG]),
   getSidebarSettings: taggedRead<"getSidebarSettings">([SIDEBAR_SETTINGS_TAG]),
   listProjects: taggedRead<"listProjects">([PROJECTS_TAG]),

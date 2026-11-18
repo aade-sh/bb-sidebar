@@ -48,6 +48,7 @@ import { useScrollFade } from "./useScrollFade";
 import { useShelveActions } from "./useShelveActions";
 import { usePersistedPreference } from "./lib/use-persisted-preference";
 import { activeSortCodec, childExpansionCodec, shelfExpansionCodec } from "./lib/inbox-preference-codecs";
+import { ChildGroupsProvider } from "./ChildGroups";
 const SETTLED_INITIAL_LIMIT = 10;
 
 type ActiveShelfKind = "pinned" | "inbox";
@@ -68,7 +69,9 @@ export function ThreadInbox(props: PluginThreadListProps) {
   const { settled, portScope } = useLiveThreads(snapshot.threads, lifecycleRows);
   return (
     <RateLimitsProvider threads={snapshot.threads} settledThreadIds={settled}>
-      <ThreadInboxContent {...props} snapshot={snapshot} lifecycleRows={lifecycleRows} portScope={portScope} />
+      <ChildGroupsProvider threads={snapshot.threads} ready={snapshot.status === "ready"}>
+        <ThreadInboxContent {...props} snapshot={snapshot} lifecycleRows={lifecycleRows} portScope={portScope} />
+      </ChildGroupsProvider>
     </RateLimitsProvider>
   );
 }

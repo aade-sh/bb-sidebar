@@ -5,6 +5,7 @@ import { useBbNavigate, useRpc, type PluginSidebarThread } from "@get-bb/plugin-
 import { errorDetail, toast } from "./lib/toast";
 import type { bbSidebarRpcContract } from "./contract";
 import { ParentThreadMenu } from "./ParentThreadMenu";
+import { ChildGroupMenu, NewChildGroupDialog } from "./ChildGroupMenu";
 import { notifiesParent, ParentNotificationsMenu } from "./ParentNotificationsMenu";
 import { DeleteThreadDialog } from "./DeleteThreadDialog";
 import { SnoozePickerDialog } from "./SnoozePickerDialog";
@@ -93,6 +94,7 @@ function RowMenuContents({
   const pendingNotificationSave = useRef<Promise<void> | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [pickingSnooze, setPickingSnooze] = useState(false);
+  const [creatingGroup, setCreatingGroup] = useState(false);
   // Archive takes the children with it, and bb leaves every idle one's agent
   // session loaded. Release them alongside the archive. Working children are
   // skipped, so this never interrupts a turn archive itself would not.
@@ -151,7 +153,7 @@ function RowMenuContents({
               onCloseAutoFocus={(event) => {
                 onCloseAutoFocus?.(event);
                 // A dialog takes focus next; do not pull it back to the row.
-                if (confirmingDelete || pickingSnooze) event.preventDefault();
+                if (confirmingDelete || pickingSnooze || creatingGroup) event.preventDefault();
                 if (!renameAfterClose.current) return;
                 renameAfterClose.current = false;
                 // Hand focus to the editor after the menu releases its focus scope.
@@ -162,6 +164,7 @@ function RowMenuContents({
             >
               <Item onSelect={() => void run("split")}>Open in split</Item>
               <ParentThreadMenu thread={thread} />
+              <ChildGroupMenu thread={thread} onCreate={() => setCreatingGroup(true)} />
               {notifiesParent(thread) ? (
                 <ParentNotificationsMenu thread={thread} pendingSave={pendingNotificationSave} />
               ) : null}
@@ -248,6 +251,7 @@ function RowMenuContents({
         )}
       </ProjectActions>
       <DeleteThreadDialog thread={thread} open={confirmingDelete} onOpenChange={setConfirmingDelete} />
+      <NewChildGroupDialog thread={thread} open={creatingGroup} onOpenChange={setCreatingGroup} />
       {onSnooze ? (
         <SnoozePickerDialog open={pickingSnooze} onOpenChange={setPickingSnooze} onSnooze={onSnooze} />
       ) : null}

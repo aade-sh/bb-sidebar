@@ -39,6 +39,7 @@ import { ProviderGlyph } from "./ProviderGlyph";
 import { ProjectFavicon } from "./ProjectFavicon";
 import { projectIconUrl } from "./project-icons";
 import { PROJECT_ICONS_CHANNEL } from "./realtime-channels";
+import { ChildThreadGroupRows } from "./ChildThreadGroupRows";
 const MAX_CHILD_DOTS = 3;
 
 export function childThreadsByParent(
@@ -222,6 +223,7 @@ function ChildThreadRows({
   onThreadOpen,
   visibleThreads,
   isWorking,
+  expanded = true,
 }: ReturnType<typeof useInboxChildList<ChildThreadListProps>> & {
   visibleThreads: readonly PluginSidebarThread[];
   isWorking: ThreadWorking;
@@ -306,12 +308,30 @@ function ChildThreadRows({
               data-grandchild-thread-list={depth === 1 ? "sidebar" : undefined}
               className="ml-3 flex flex-col border-l border-border"
             >
-              {renderRows(visibleDescendants, depth + 1, path, child.projectId)}
+              {renderSiblings(visibleDescendants, depth + 1, path, child.projectId)}
             </ul>
           ) : null}
         </li>
       );
     });
+
+  const renderSiblings = (
+    siblings: readonly PluginSidebarThread[],
+    depth: number,
+    ancestors: ReadonlySet<string>,
+    projectId: string | null | undefined,
+  ) =>
+    !expanded && depth === 1 ? (
+      renderRows(siblings, depth, ancestors, projectId)
+    ) : (
+      <ChildThreadGroupRows
+        threads={siblings}
+        childrenByParent={childrenByParent}
+        isWorking={isWorking}
+        activeThreadId={activeThreadId}
+        renderRows={(members) => renderRows(members, depth, ancestors, projectId)}
+      />
+    );
 
   return (
     <ul
@@ -321,7 +341,7 @@ function ChildThreadRows({
       onContextMenu={(event) => event.stopPropagation()}
       className="ml-4 mt-1 flex flex-col border-l border-border"
     >
-      {renderRows(visibleThreads, 1, new Set(), parentProjectId)}
+      {renderSiblings(visibleThreads, 1, new Set(), parentProjectId)}
     </ul>
   );
 }

@@ -98,6 +98,26 @@ const orderedThreadIdsSchema = z
     }
   });
 const threadIdsSchema = orderedThreadIdsSchema.min(1);
+export const childGroupsSchema = z
+  .array(
+    z
+      .object({
+        id: z.string().trim().min(1).max(255),
+        parentThreadId: z.string().trim().min(1).max(255),
+        name: z.string().trim().min(1).max(1000),
+        threadIds: orderedThreadIdsSchema,
+        collapsed: z.boolean(),
+      })
+      .strict(),
+  )
+  .max(500)
+  .superRefine((groups, context) => {
+    const groupIds = groups.map((group) => group.id);
+    const threadIds = groups.flatMap((group) => group.threadIds);
+    if (new Set(groupIds).size !== groupIds.length || new Set(threadIds).size !== threadIds.length) {
+      context.addIssue({ code: "custom", message: "Each group and child must appear once" });
+    }
+  });
 export const cleanupIssueSchema = z.object({
   threadId: z.string(),
   resource: z.enum(["thread", "terminal", "port"]),
@@ -268,6 +288,14 @@ export const bbSidebarRpcContract = defineRpcContract({
   getSidebarSettings: {
     input: z.object({}).strict(),
     output: sidebarSettingsSchema,
+  },
+  getChildGroups: {
+    input: z.object({}).strict(),
+    output: z.object({ groups: z.array(childGroupsSchema.element).max(500) }),
+  },
+  setChildGroups: {
+    input: z.object({ parentThreadId: z.string().trim().min(1), groups: childGroupsSchema.min(1) }).strict(),
+    output: z.object({ groups: childGroupsSchema }),
   },
   updateSidebarSettings: {
     // Save only edited fields. Full payloads from older clients remain valid.

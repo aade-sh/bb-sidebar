@@ -19,6 +19,7 @@ A stable thread list for [bb](https://github.com/get-bb/bb). Threads stay where 
 - Optional project colors with per-project color selection. Names stay colored in every mode; show stripes in full and collapsed mode, full mode only, grouped projects only, or not at all
 - Automatic project icons with custom overrides
 - Expandable child-thread indicators with running and attention states, on shelf rows too
+- Custom child groups within each parent, with manual membership saved on the server and collapse preferences kept per browser. An input request opens the affected group.
 - Live status, branch, pull request, and provider details, plus statuses set by other plugins
 - Command palette commands that snooze or unsnooze the thread in view
 - A `bb sidebar` command so agents can list, snooze, settle, park, resume, pin, and re-parent threads
